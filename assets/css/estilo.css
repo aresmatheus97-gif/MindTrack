@@ -1,28 +1,47 @@
-/* ── variáveis ───────────────────────────────────────────── */
+/* ══════════════════════════════════════════════════════════════
+   VARIÁVEIS GLOBAIS
+   Definem as cores, tamanhos e sombras usados em todo o projeto.
+   Alterar um valor aqui reflete em todos os elementos que o usam.
+   ══════════════════════════════════════════════════════════════ */
 :root {
-  --fundo:         #f5f3ee;
-  --fundo-card:    #ffffff;
-  --sidebar-bg:    #1c2b35;
-  --sidebar-texto: #c8d6dc;
-  --sidebar-ativo: #ffffff;
+  /* cores de fundo */
+  --fundo:         #f3f6f8; /* bege claro — fundo geral da página */
+  --fundo-card:    #dde4eb; /* branco — fundo dos cartões e painéis */
 
-  --texto:         #1c2b35;
-  --texto-suave:   #6b7a82;
+  /* cores da sidebar */
+  --sidebar-bg:    #1c2b35; /* azul-escuro — fundo do menu lateral */
+  --sidebar-texto: #c8d6dc; /* cinza-azulado claro — texto do menu */
+  --sidebar-ativo: #ffffff; /* branco — texto do item de menu ativo */
+
+  /* cores de texto */
+  --texto:         #1c2b35; /* cor principal dos textos */
+  --texto-suave:   #6b7a82; /* cor de textos secundários e rótulos */
+
+  /* cor de bordas e divisores */
   --borda:         #e2ddd5;
 
-  --azul:          #3a6b8a;
-  --verde:         #4a8c74;
-  --laranja:       #c4833a;
-  --roxo:          #7a5a8a;
+  /* cores de destaque — usadas nos cards e badges */
+  --azul:    #3a6b8a;
+  --verde:   #4a8c74;
+  --laranja: #c4833a;
+  --roxo:    #7a5a8a;
 
-  --largura-sidebar: 220px;
+  /* largura da sidebar quando aberta */
+  --largura-sidebar: 180px;
 }
 
-/* ── reset ───────────────────────────────────────────────── */
-* {
+/* ══════════════════════════════════════════════════════════════
+   RESET
+   Remove margens e paddings padrão do navegador para termos
+   controle total sobre o espaçamento de cada elemento.
+   box-sizing: border-box faz padding e border não aumentarem
+   o tamanho total dos elementos — comportamento mais previsível.
+   ══════════════════════════════════════════════════════════════ */
+*{
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  border-left: 0;
 }
 
 body {
@@ -30,23 +49,120 @@ body {
   font-size: 14px;
   background-color: var(--fundo);
   color: var(--texto);
-  display: flex;
   min-height: 100vh;
 }
 
-/* ── sidebar ─────────────────────────────────────────────── */
+/* ══════════════════════════════════════════════════════════════
+   SIDEBAR — MENU LATERAL RECOLHÍVEL
+   ══════════════════════════════════════════════════════════════
+
+   Mecanismo de hover sem JavaScript:
+   ────────────────────────────────────
+   O HTML tem esta ordem de irmãos:
+     .gatilho-sidebar   (barrinha fina)
+     .sidebar           (menu lateral)
+     .principal         (conteúdo)
+
+   O CSS usa o combinador "~" (seletor de irmão geral) para
+   ativar a sidebar quando o cursor passa pelo gatilho:
+
+     .gatilho-sidebar:hover ~ .sidebar → abre a sidebar
+     .sidebar:hover                    → mantém aberta enquanto
+                                         o cursor está dentro
+
+   A sidebar usa transform: translateX para o movimento.
+   Animar "width" é proibido pois força o navegador a recalcular
+   o layout inteiro a cada frame — muito mais custoso. ══════════════════════════════════════════════════════════════ */
+
+/* Barrinha fina que serve de gatilho do hover */
+.gatilho-sidebar {
+  position: fixed;       /* fixada em relação à janela do navegador */
+  top: 50%;              /* centralizada verticalmente */
+  left: 0;               /* colada na borda esquerda */
+  transform: translateY(-50%); /* ajuste fino para centralização perfeita */
+  width: 4px;            /* largura mínima visível */
+  height: 60px;          /* altura da barrinha */
+  background-color: var(--azul);
+  border-radius: 0 2px 2px 0; /* arredondamento só no lado direito */
+  opacity: 0.5;          /* discreta quando não está em hover */
+  z-index: 200;          /* acima de tudo, inclusive da sidebar */
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+
+.gatilho-sidebar:hover ~ .overlay,
+.sidebar:hover ~ .overlay {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Barrinha some quando a sidebar está aberta para não atrapalhar */
+.overlay:hover ~ .gatilho-sidebar,
+.sidebar:hover ~ .gatilho-sidebar {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Estado padrão da sidebar: escondida fora da tela à esquerda */
 .sidebar {
-  width: var(--largura-sidebar);
-  background-color: var(--sidebar-bg);
-  display: flex;
-  flex-direction: column;
   position: fixed;
   top: 0;
   left: 0;
+  width: var(--largura-sidebar);
   height: 100vh;
+  background-color: var(--sidebar-bg);
+  display: flex;
+  flex-direction: column;
   padding-bottom: 24px;
+  z-index: 100;
+
+  /* Começa deslocada para a esquerda (fora da tela) */
+  transform: translateX(-180px);
+
+  /*
+    Transição suave ao abrir e fechar.
+    Apenas "transform" e "opacity" são animadas —
+    ambas são processadas pela GPU sem afetar o layout.
+  */
+  transition: transform 0.25s ease, opacity 0.25s ease;
+  opacity: 0; /* invisível por padrão */
+}
+.overlay {
+  position: fixed;
+  top: 0;
+  left: var(--largura-sidebar);
+  width: calc(100% - var(--largura-sidebar));
+  height: 100vh;
+
+  backdrop-filter: blur(5px);
+  background: rgba(0, 0, 0, 0.1);
+
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+  z-index: 5;
+}
+/*
+  A sidebar abre quando:
+  1. O cursor passa pelo gatilho (.gatilho-sidebar:hover ~ .sidebar)
+  2. O cursor está dentro da própria sidebar (.sidebar:hover)
+  O segundo caso é essencial: sem ele, a sidebar fecharia
+  no instante que o cursor saísse da barrinha.
+*/
+.gatilho-sidebar:hover ~ .sidebar,
+.sidebar:hover {
+  display: grid;
+  transform: translateX(0); /* volta para a posição original */
+  opacity: 1;
 }
 
+.gatilho-sidebar:hover ~ .overlay,
+.sidebar:hover ~ .overlay {
+  opacity: 1;
+  pointer-events: auto;
+}
+/* Identidade visual do sistema no topo da sidebar */
 .logo {
   display: flex;
   flex-direction: column;
@@ -57,20 +173,21 @@ body {
 
 .logo-nome {
   font-family: 'Lora', serif;
-  font-size: 1.1rem;
+  font-size: 1.05rem;
   color: #ffffff;
 }
 
 .logo-sub {
-  font-size: 0.65rem;
+  font-size: 0.62rem;
   color: var(--sidebar-texto);
   text-transform: uppercase;
   letter-spacing: 0.06em;
   margin-top: 2px;
 }
 
+/* Rótulo de grupo de navegação (ex: "Geral", "Análise") */
 .nav-rotulo {
-  font-size: 0.6rem;
+  font-size: 0.58rem;
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.1em;
@@ -78,6 +195,7 @@ body {
   padding: 14px 20px 4px;
 }
 
+/* Botão de item de navegação */
 .nav-item {
   display: block;
   width: 100%;
@@ -87,7 +205,7 @@ body {
   text-align: left;
   color: var(--sidebar-texto);
   font-family: 'Inter', sans-serif;
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   cursor: pointer;
   transition: background-color 0.15s;
 }
@@ -97,19 +215,26 @@ body {
   color: #ffffff;
 }
 
+/* Item ativo: indica a página atual com destaque verde */
 .nav-item.ativo {
-  background-color: rgba(74, 140, 116, 0.18);
+  background-color: rgb(77, 130, 143);
   color: var(--sidebar-ativo);
   font-weight: 500;
   border-right: 3px solid var(--verde);
 }
 
+/* Linha divisória entre grupos do menu */
 .separador {
   border: none;
   border-top: 1px solid rgba(255, 255, 255, 0.06);
   margin: 10px 0;
 }
 
+/*
+  Perfil do usuário fixado na base da sidebar.
+  "margin-top: auto" em flexbox empurra este bloco
+  para o final do container, independente do conteúdo acima.
+*/
 .perfil {
   margin-top: auto;
   display: flex;
@@ -119,49 +244,60 @@ body {
   border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
+/* Círculo com as iniciais do psicólogo */
 .perfil-avatar {
-  width: 34px;
-  height: 34px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   background-color: var(--azul);
   color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   font-weight: 500;
-  flex-shrink: 0;
+  flex-shrink: 0; /* impede que o avatar encolha em espaços pequenos */
 }
 
 .perfil-nome {
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   font-weight: 500;
   color: #ffffff;
 }
 
 .perfil-crp {
-  font-size: 0.68rem;
+  font-size: 0.65rem;
   color: var(--sidebar-texto);
 }
 
-/* ── area principal ──────────────────────────────────────── */
+/* ══════════════════════════════════════════════════════════════
+   ÁREA PRINCIPAL
+   Ocupa toda a largura da tela. A sidebar flutua sobre ela
+   (position: fixed), então não é necessário margin-left.
+   ══════════════════════════════════════════════════════════════ */
 .principal {
-  margin-left: var(--largura-sidebar);
-  flex: 1;
   display: flex;
   flex-direction: column;
+  min-height: 100vh;
 }
 
+/*
+  Topbar: barra presa ao topo durante o scroll.
+  "position: sticky" com "top: 0" faz ela grudar no topo
+  conforme o usuário rola, sem sair do fluxo do documento.
+  
+*/
 .topbar {
   background-color: var(--fundo-card);
   border-bottom: 1px solid var(--borda);
   padding: 14px 28px;
   position: sticky;
   top: 0;
-  z-index: 10;
+  z-index: 10; /* abaixo da sidebar (z-index: 100) */
 }
 
 .topbar-titulo {
+  text-align: center; /* centraliza o texto no meio da topbar */
   font-family: 'Lora', serif;
   font-style: italic;
   font-size: 1rem;
@@ -169,17 +305,24 @@ body {
 }
 
 .topbar-data {
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  color:#e6eef4;
   font-size: 0.72rem;
   color: var(--texto-suave);
   margin-top: 2px;
 }
 
+/* Área de scroll com o conteúdo do painel */
 .conteudo {
   padding: 24px 28px 40px;
-  flex: 1;
+  flex: 1; /* ocupa todo o espaço vertical disponível */
 }
 
-/* ── secoes ──────────────────────────────────────────────── */
+/* ══════════════════════════════════════════════════════════════
+   SEÇÕES
+   ══════════════════════════════════════════════════════════════ */
 .secao {
   margin-bottom: 28px;
 }
@@ -192,6 +335,7 @@ body {
   margin-bottom: 14px;
 }
 
+/* Complemento do título em texto menor e mais suave */
 .secao-sub {
   font-family: 'Inter', sans-serif;
   font-size: 0.72rem;
@@ -199,11 +343,13 @@ body {
   color: var(--texto-suave);
 }
 
-/* ── acoes rapidas ───────────────────────────────────────── */
+/* ══════════════════════════════════════════════════════════════
+   AÇÕES RÁPIDAS
+   ══════════════════════════════════════════════════════════════ */
 .acoes-rapidas {
   display: flex;
   gap: 10px;
-  flex-wrap: wrap;
+  flex-wrap: wrap; /* quebra para a linha seguinte em telas menores */
 }
 
 .btn-acao {
@@ -214,42 +360,49 @@ body {
   font-size: 0.82rem;
   font-weight: 500;
   cursor: pointer;
+  /* Apenas transform e opacity — não animamos propriedades de layout */
   transition: opacity 0.15s, transform 0.15s;
 }
 
 .btn-acao:hover {
   opacity: 0.88;
-  transform: translateY(-1px);
+  transform: translateY(-1px); /* leve elevação no hover */
 }
 
-.btn-primario  { background-color: var(--azul);   color: #ffffff; }
-.btn-secundario{ background-color: var(--verde);  color: #ffffff; }
-.btn-terciario {
+/* Variações de cor dos botões de ação */
+.btn-primario   { background-color: var(--azul);    color: #ffffff; }
+.btn-secundario { background-color: var(--verde);   color: #ffffff; }
+.btn-terciario  {
   background-color: var(--fundo-card);
   color: var(--texto);
   border: 1px solid var(--borda);
 }
 
-/* ── cards ───────────────────────────────────────────────── */
+/* ══════════════════════════════════════════════════════════════
+   CARDS DE ESTATÍSTICAS
+   Grade de 4 colunas iguais com os indicadores do mês.
+   ══════════════════════════════════════════════════════════════ */
 .grade-cards {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(4, 1fr); /* 4 colunas de tamanho igual */
   gap: 14px;
 }
 
 .card {
   background-color: var(--fundo-card);
   border: 1px solid var(--borda);
-  border-top: 3px solid var(--borda);
+  border-top: 3px solid var(--borda); /* faixa colorida no topo — sobrescrita por .card-* */
   border-radius: 10px;
   padding: 18px 20px;
 }
 
+/* Cada variação define a cor da faixa no topo do card */
 .card-azul    { border-top-color: var(--azul); }
 .card-verde   { border-top-color: var(--verde); }
 .card-laranja { border-top-color: var(--laranja); }
 .card-roxo    { border-top-color: var(--roxo); }
 
+/* Rótulo pequeno acima do valor principal */
 .card-rotulo {
   font-size: 0.7rem;
   font-weight: 500;
@@ -259,6 +412,7 @@ body {
   margin-bottom: 8px;
 }
 
+/* Número grande em destaque */
 .card-valor {
   font-family: 'Lora', serif;
   font-size: 2rem;
@@ -267,26 +421,32 @@ body {
   margin-bottom: 6px;
 }
 
+/* Texto de comparação com o período anterior */
 .card-info {
   font-size: 0.7rem;
   color: var(--texto-suave);
 }
 
-/* ── grade inferior ──────────────────────────────────────── */
+/* ══════════════════════════════════════════════════════════════
+   GRADE INFERIOR
+   Divide em duas colunas: tabela (flexível) e calendário (fixo).
+   ══════════════════════════════════════════════════════════════ */
 .grade-inferior {
   display: grid;
-  grid-template-columns: 1fr 300px;
+  grid-template-columns: 1fr 290px; /* coluna direita tem largura fixa */
   gap: 18px;
-  align-items: start;
+  align-items: start; /* os dois painéis não precisam ter mesma altura */
 }
 
+/* Painel branco com borda arredondada */
 .card-secao {
   background-color: var(--fundo-card);
   border: 1px solid var(--borda);
   border-radius: 10px;
-  overflow: hidden;
+  overflow: hidden; /* impede que filhos vazem fora do border-radius */
 }
 
+/* Cabeçalho do painel com título e link/botão à direita */
 .card-secao-cabecalho {
   display: flex;
   align-items: center;
@@ -311,12 +471,15 @@ body {
 
 .link-ver-todos:hover { text-decoration: underline; }
 
-/* ── tabela ──────────────────────────────────────────────── */
+/* ══════════════════════════════════════════════════════════════
+   TABELA DE ATENDIMENTOS
+   ══════════════════════════════════════════════════════════════ */
 .tabela {
   width: 100%;
-  border-collapse: collapse;
+  border-collapse: collapse; /* remove espaço duplo entre células */
 }
 
+/* Cabeçalho com fundo levemente diferente para destaque */
 .tabela thead tr { background-color: var(--fundo); }
 
 .tabela th {
@@ -336,9 +499,13 @@ body {
   border-bottom: 1px solid var(--borda);
 }
 
+/* Remove borda da última linha para não duplicar com a borda do card */
 .tabela tbody tr:last-child td { border-bottom: none; }
-.tabela tbody tr:hover td      { background-color: var(--fundo); }
 
+/* Destaque sutil ao passar o mouse sobre uma linha */
+.tabela tbody tr:hover td { background-color: var(--fundo); }
+
+/* Badge colorido de status do atendimento */
 .badge {
   display: inline-block;
   padding: 2px 10px;
@@ -351,9 +518,13 @@ body {
 .badge-falta     { background-color: #f4e6e6; color: #9b4a4a; }
 .badge-agendado  { background-color: #e6eef4; color: var(--azul); }
 
-/* ── calendario ──────────────────────────────────────────── */
+/* ══════════════════════════════════════════════════════════════
+   CALENDÁRIO
+   Grade de 7 colunas representando os dias da semana.
+   ══════════════════════════════════════════════════════════════ */
 .calendario { padding: 12px 14px 8px; }
 
+/* Linha com as letras dos dias da semana (D S T Q Q S S) */
 .cal-semana {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
@@ -369,6 +540,7 @@ body {
   padding: 4px 0;
 }
 
+/* Grade dos números dos dias */
 .cal-dias {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
@@ -376,6 +548,7 @@ body {
   text-align: center;
 }
 
+/* Cada número do dia */
 .dia {
   padding: 5px 2px;
   font-size: 0.78rem;
@@ -385,18 +558,28 @@ body {
   transition: background-color 0.12s;
 }
 
-.dia:hover      { background-color: var(--fundo); }
-.dia.outro-mes  { color: var(--borda); }
-.dia.com-sessao { font-weight: 500; color: var(--verde); }
+.dia:hover     { background-color: var(--fundo); }
 
+/* Dias de outro mês aparecem apagados */
+.dia.outro-mes { color: var(--borda); }
+
+/* Dias com sessão marcada ficam em verde e negrito */
+.dia.com-sessao {
+  font-weight: 500;
+  color: var(--verde);
+}
+
+/* Dia atual: fundo azul com texto branco */
 .dia.hoje {
   background-color: var(--azul);
   color: #ffffff;
   font-weight: 500;
 }
 
+/* Dia atual com sessão: mantém texto branco (sobrescreve o verde) */
 .dia.hoje.com-sessao { color: #ffffff; }
 
+/* Botões de navegação de mês (← →) */
 .btn-mes {
   background: none;
   border: 1px solid var(--borda);
@@ -411,9 +594,12 @@ body {
 
 .btn-mes:hover { background-color: var(--fundo); }
 
-/* sessoes do dia */
+/* ══════════════════════════════════════════════════════════════
+   SESSÕES DO DIA — lista abaixo do calendário
+   ══════════════════════════════════════════════════════════════ */
 .sessoes-hoje { padding: 0 14px 10px; }
 
+/* Rótulo "Hoje — 22 mar" acima da lista */
 .sessoes-titulo {
   font-size: 0.65rem;
   font-weight: 500;
@@ -425,6 +611,7 @@ body {
   margin-top: 4px;
 }
 
+/* Cada item da lista de sessões */
 .sessao-item {
   display: flex;
   align-items: flex-start;
@@ -435,6 +622,7 @@ body {
 
 .sessao-item:last-child { border-bottom: none; }
 
+/* Horário em azul à esquerda */
 .sessao-hora {
   font-size: 0.72rem;
   font-weight: 500;
@@ -442,18 +630,22 @@ body {
   min-width: 38px;
 }
 
+/* Nome do paciente */
 .sessao-paciente {
   font-size: 0.8rem;
   font-weight: 500;
   color: var(--texto);
 }
 
+/* Tipo de atendimento (individual, familiar etc.) */
 .sessao-tipo {
   font-size: 0.68rem;
   color: var(--texto-suave);
 }
 
-/* ── rodape ──────────────────────────────────────────────── */
+/* ══════════════════════════════════════════════════════════════
+   RODAPÉ
+   ══════════════════════════════════════════════════════════════ */
 .rodape {
   display: flex;
   justify-content: space-between;
