@@ -8,7 +8,7 @@ This project represents the **first MVP version**, focused on building a clean a
 
 ## 🌐 Live Preview
 
-> (https://aresmatheus97-gif.github.io/MindTrack/)
+> [MindTrack Website](https://aresmatheus97-gif.github.io/MindTrack/)
 
 ---
 
