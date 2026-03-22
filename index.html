@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MindTrack — Painel</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/estilo.css" />
+</head>
+
+<body>
+
+  <aside class="sidebar">
+
+    <div class="logo">
+      <span class="logo-nome">MindTrack</span>
+      <span class="logo-sub">Gestão clínica</span>
+    </div>
+
+    <nav>
+      <p class="nav-rotulo">Geral</p>
+      <button class="nav-item ativo" type="button">Painel</button>
+      <button class="nav-item" type="button">Pacientes</button>
+      <button class="nav-item" type="button">Agenda</button>
+      <button class="nav-item" type="button">Prontuários</button>
+      <hr class="separador" />
+      <p class="nav-rotulo">Análise</p>
+      <button class="nav-item" type="button">Relatórios</button>
+      <button class="nav-item" type="button">Configurações</button>
+    </nav>
+
+    <div class="perfil">
+      <div class="perfil-avatar">MP</div>
+      <div>
+        <p class="perfil-nome">Dra. Luiza Ellena</p>
+        <p class="perfil-crp">CRP 06/123456</p>
+      </div>
+    </div>
+
+  </aside>
+
+  <div class="principal">
+
+    <header class="topbar">
+      <div>
+        <p class="topbar-titulo">Bom dia, Luiza.</p>
+        <p class="topbar-data">Domingo, 22 de março de 2026</p>
+      </div>
+    </header>
+
+    <main class="conteudo"> <!-- define-->
+
+      <!-- acoes rapidas -->
+      <section class="secao">
+        <h2 class="secao-titulo">Ações rápidas</h2>
+        <div class="acoes-rapidas">
+          <button class="btn-acao btn-primario" type="button">+ Novo paciente</button>
+          <button class="btn-acao btn-secundario" type="button">+ Agendar consulta</button>
+          <button class="btn-acao btn-terciario" type="button">Registrar atendimento</button>
+          <button class="btn-acao btn-terciario" type="button">Ver relatórios</button>
+        </div>
+      </section>
+
+      <!-- cards de estatisticas -->
+      <section class="secao">
+        <h2 class="secao-titulo">Visão geral <span class="secao-sub">março 2026 · dados fictícios</span></h2>
+        <div class="grade-cards">
+
+          <article class="card card-azul">
+            <p class="card-rotulo">Total de pacientes</p>
+            <p class="card-valor">34</p>
+            <p class="card-info">+3 em relação ao mês anterior</p>
+          </article>
+
+          <article class="card card-verde">
+            <p class="card-rotulo">Sessões no mês</p>
+            <p class="card-valor">61</p>
+            <p class="card-info">+8 vs. fevereiro</p>
+          </article>
+
+          <article class="card card-laranja">
+            <p class="card-rotulo">Faltas registradas</p>
+            <p class="card-valor">5</p>
+            <p class="card-info">−2 vs. mês anterior</p>
+          </article>
+
+          <article class="card card-roxo">
+            <p class="card-rotulo">Taxa de presença</p>
+            <p class="card-valor">92%</p>
+            <p class="card-info">+4% vs. fevereiro</p>
+          </article>
+
+        </div>
+      </section>
+
+      <!-- grade inferior -->
+      <div class="grade-inferior">
+
+        <!-- tabela de atendimentos recentes -->
+        <section class="secao">
+          <div class="card-secao">
+            <div class="card-secao-cabecalho">
+              <h2 class="card-secao-titulo">Atendimentos recentes</h2>
+              <a class="link-ver-todos" tabindex="0">Ver todos</a>
+            </div>
+            <table class="tabela">
+              <thead>
+                <tr>
+                  <th>Paciente</th>
+                  <th>Data</th>
+                  <th>Horário</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Ana Silva</td>
+                  <td>22/03/2026</td>
+                  <td>09:00</td>
+                  <td><span class="badge badge-realizado">Realizado</span></td>
+                </tr>
+                <tr>
+                  <td>Carlos Matos</td>
+                  <td>21/03/2026</td>
+                  <td>10:30</td>
+                  <td><span class="badge badge-realizado">Realizado</span></td>
+                </tr>
+                <tr>
+                  <td>Luiza Ramos</td>
+                  <td>21/03/2026</td>
+                  <td>14:00</td>
+                  <td><span class="badge badge-falta">Falta</span></td>
+                </tr>
+                <tr>
+                  <td>Pedro Oliveira</td>
+                  <td>20/03/2026</td>
+                  <td>08:00</td>
+                  <td><span class="badge badge-realizado">Realizado</span></td>
+                </tr>
+                <tr>
+                  <td>Luiza Bueno</td>
+                  <td>19/03/2026</td>
+                  <td>16:00</td>
+                  <td><span class="badge badge-agendado">Agendado</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- calendario -->
+        <section class="secao">
+          <div class="card-secao">
+            <div class="card-secao-cabecalho">
+              <h2 class="card-secao-titulo">Março 2026</h2>
+              <div>
+                <button class="btn-mes" type="button">&lsaquo;</button>
+                <button class="btn-mes" type="button">&rsaquo;</button>
+              </div>
+            </div>
+
+            <div class="calendario">
+              <div class="cal-semana">
+                <span>D</span><span>S</span><span>T</span>
+                <span>Q</span><span>Q</span><span>S</span><span>S</span>
+              </div>
+              <div class="cal-dias">
+                <span class="dia">1</span>
+                <span class="dia com-sessao">2</span>
+                <span class="dia com-sessao">3</span>
+                <span class="dia">4</span>
+                <span class="dia com-sessao">5</span>
+                <span class="dia">6</span>
+                <span class="dia">7</span>
+                <span class="dia">8</span>
+                <span class="dia com-sessao">9</span>
+                <span class="dia com-sessao">10</span>
+                <span class="dia">11</span>
+                <span class="dia com-sessao">12</span>
+                <span class="dia">13</span>
+                <span class="dia">14</span>
+                <span class="dia">15</span>
+                <span class="dia com-sessao">16</span>
+                <span class="dia com-sessao">17</span>
+                <span class="dia">18</span>
+                <span class="dia com-sessao">19</span>
+                <span class="dia">20</span>
+                <span class="dia">21</span>
+                <span class="dia hoje">22</span>
+                <span class="dia com-sessao">23</span>
+                <span class="dia com-sessao">24</span>
+                <span class="dia">25</span>
+                <span class="dia com-sessao">26</span>
+                <span class="dia">27</span>
+                <span class="dia">28</span>
+                <span class="dia">29</span>
+                <span class="dia com-sessao">30</span>
+                <span class="dia com-sessao">31</span>
+                <span class="dia outro-mes">1</span>
+                <span class="dia outro-mes">2</span>
+                <span class="dia outro-mes">3</span>
+                <span class="dia outro-mes">4</span>
+              </div>
+            </div>
+
+            <div class="sessoes-hoje">
+              <p class="sessoes-titulo">Hoje — 22 mar</p>
+
+              <div class="sessao-item">
+                <span class="sessao-hora">09:00</span>
+                <div>
+                  <p class="sessao-paciente">Ana Silva</p>
+                  <p class="sessao-tipo">Sessão individual</p>
+                </div>
+              </div>
+
+              <div class="sessao-item">
+                <span class="sessao-hora">11:00</span>
+                <div>
+                  <p class="sessao-paciente">Rafael Costa</p>
+                  <p class="sessao-tipo">Sessão individual</p>
+                </div>
+              </div>
+
+              <div class="sessao-item">
+                <span class="sessao-hora">14:30</span>
+                <div>
+                  <p class="sessao-paciente">Família Mendes</p>
+                  <p class="sessao-tipo">Terapia familiar</p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+      </div><!-- fim grade-inferior -->
+
+    </main>
+
+    <footer class="rodape">
+      <span>MindTrack — protótipo de Dashboard para controle geral de pscicologos · dados fictícios</span>
+      <span>v0.1.0</span>
+    </footer>
+
+  </div><!-- fim principal -->
+
+</body>
+</html>
