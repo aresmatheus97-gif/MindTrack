@@ -1,0 +1,321 @@
+/*
+  Estilos específicos desta página.
+  Não alteram nenhuma classe do style.css compartilhado —
+  apenas adicionam o que é exclusivo de pacientes.html.
+*/
+
+/* ── barra de ações (busca + botões) ──────────────────────── */
+
+/*
+  Labels usados como botões (.btn-acao) têm display:inline por padrão.
+  Precisamos de inline-flex para que padding, altura e alinhamento
+  funcionem igual a um <button> dentro do flex container.
+*/
+.barra-acoes label.btn-acao {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+/* Linha que agrupa a barra de busca e os botões de gerenciar */
+.barra-acoes {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+/*
+  Campo de busca decorativo — sem funcionalidade nesta versão.
+  O input recebe estilos mas não filtra a tabela (sem JS).
+*/
+.campo-busca {
+  flex: 1;
+  min-width: 200px;
+  padding: 8px 14px;
+  border: 1px solid var(--borda);
+  border-radius: 6px;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.83rem;
+  color: var(--texto);
+  background-color: var(--fundo-card);
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.campo-busca:focus { border-color: var(--azul); }
+.campo-busca::placeholder { color: var(--texto-suave); }
+
+/* ── tabela de pacientes ──────────────────────────────────── */
+
+/*
+  Coluna de notas pode ter texto longo — limitamos a largura
+  e quebramos com reticências para não estourar o layout.
+*/
+.col-notas {
+  max-width: 180px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Badges de status do paciente */
+.badge-ativo   { background-color: #e6f4ef; color: var(--verde); }
+.badge-inativo { background-color: #f4e6e6; color: #9b4a4a; }
+
+/* Badges de situação financeira */
+.badge-pendente { background-color: #fef3e2; color: var(--laranja); }
+.badge-em-dia   { background-color: #e6f4ef; color: var(--verde); }
+
+/* ── painéis laterais ────────────────────────────────────── */
+
+/*
+  Checkboxes que controlam os painéis.
+  Não usamos display:none — impede o <label for> em alguns navegadores.
+  Posicionamos fora da tela mantendo o DOM acessível.
+*/
+.painel-gatilho {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+/*
+  Fundo semitransparente que aparece atrás do painel aberto.
+  Invisível por padrão — ativado via :checked abaixo.
+  Os labels dentro dele fecham o painel ao clicar fora.
+*/
+.painel-fundo {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(28, 43, 53, 0.35);
+  z-index: 400;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+
+/*
+  Labels invisíveis que cobrem o fundo.
+  Ao clicar fora do painel, desmarcam o checkbox e fecham o painel.
+*/
+.painel-fundo-fechar {
+  position: absolute;
+  inset: 0;
+  cursor: default;
+}
+
+/*
+  Painel lateral — desliza da direita.
+  Estado padrão: fora da tela (translateX(100%)).
+  Mesmo princípio da sidebar, mas na direção oposta.
+  Usa apenas transform e opacity — sem animar width ou left.
+*/
+.painel-lateral {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 420px;
+  height: 100vh;
+  background-color: var(--fundo-card);
+  z-index: 401;
+  display: flex;
+  flex-direction: column;
+  box-shadow: -4px 0 24px rgba(28, 43, 53, 0.12);
+  /* Começa fora da tela à direita */
+  transform: translateX(100%);
+  /* Apenas transform e opacity — sem animar propriedades de layout */
+  transition: transform 0.28s ease, opacity 0.28s ease;
+  opacity: 0;
+}
+
+/*
+  Quando o checkbox está marcado, ativa o fundo e desliza o painel.
+  O seletor ~ funciona porque os checkboxes, o fundo e os painéis
+  são todos irmãos diretos do <body>.
+*/
+#painel-cadastro:checked ~ .painel-fundo,
+#painel-gerenciar:checked ~ .painel-fundo {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+#painel-cadastro:checked ~ .painel-cadastro,
+#painel-gerenciar:checked ~ .painel-gerenciar {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+/* Cabeçalho do painel com título e botão de fechar */
+.painel-cabecalho {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid var(--borda);
+  flex-shrink: 0;
+}
+
+.painel-titulo {
+  font-family: 'Lora', serif;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--texto);
+}
+
+/* Label × que fecha o painel ao ser clicado */
+.painel-fechar {
+  font-size: 1.3rem;
+  color: var(--texto-suave);
+  cursor: pointer;
+  line-height: 1;
+  transition: color 0.15s;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.painel-fechar:hover {
+  color: var(--texto);
+  background-color: var(--fundo);
+}
+
+/*
+  Corpo do painel com scroll independente.
+  flex: 1 faz ele ocupar todo o espaço entre cabeçalho e rodapé.
+  overflow-y: auto permite scroll quando os campos não cabem na tela.
+*/
+.painel-corpo {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px 24px;
+}
+
+/* Grupo de campo (label + input) */
+.campo-grupo { margin-bottom: 16px; }
+
+.campo-label {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: var(--texto-suave);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 5px;
+}
+
+.campo-input,
+.campo-select {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid var(--borda);
+  border-radius: 6px;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.83rem;
+  color: var(--texto);
+  background-color: var(--fundo);
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.campo-input:focus,
+.campo-select:focus { border-color: var(--azul); }
+
+/* Dois campos lado a lado */
+.campo-linha {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+/* Rodapé do painel com botões — fixado na base */
+.painel-rodape {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 16px 24px;
+  border-top: 1px solid var(--borda);
+  flex-shrink: 0;
+}
+
+/* Botão cancelar — label que fecha o painel */
+.btn-cancelar {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 18px;
+  border: 1px solid var(--borda);
+  border-radius: 6px;
+  background-color: var(--fundo-card);
+  color: var(--texto);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.btn-cancelar:hover { opacity: 0.8; }
+
+/* Bloco de aviso vermelho no painel de exclusão */
+.aviso-exclusao {
+  background-color: #fdf2f2;
+  border: 1px solid #f4e6e6;
+  border-radius: 8px;
+  padding: 14px 16px;
+  margin-bottom: 16px;
+}
+
+.aviso-exclusao p {
+  font-size: 0.85rem;
+  color: #9b4a4a;
+  line-height: 1.5;
+}
+
+.aviso-exclusao strong { font-weight: 600; }
+
+/* Botão de confirmar exclusão */
+.btn-excluir {
+  padding: 8px 18px;
+  border: none;
+  border-radius: 6px;
+  background-color: #9b4a4a;
+  color: #ffffff;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.btn-excluir:hover { opacity: 0.88; }
+
+/* ── divisor de seção dentro do painel gerenciar ────────────── */
+/*
+  Linha horizontal com rótulo centralizado.
+  Separa as ações rápidas (registrar/excluir) do formulário de edição.
+*/
+.gerenciar-divisor {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 20px 0 16px;
+}
+
+.gerenciar-divisor::before,
+.gerenciar-divisor::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background-color: var(--borda);
+}
+
+.gerenciar-divisor span {
+  font-size: 0.68rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--texto-suave);
+  white-space: nowrap;
+}
