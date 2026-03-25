@@ -40,7 +40,7 @@ The goal was to simulate a **real product development mindset**, not just build 
 
 ---
 
-## ⚙️ MVP Scope (v0.1.0)
+## ⚙️ MVP Scope (v0.1.1)
 
 This version focuses on the **foundation of the interface**.
 
@@ -54,6 +54,7 @@ This version focuses on the **foundation of the interface**.
 * Static calendar component
 * Daily sessions preview
 * Professional layout and spacing system
+* Patients page implemented
 
 ### Not included (yet):
 
