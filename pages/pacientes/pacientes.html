@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<!--
+  MindTrack — Pacientes
+  Aparência compartilhada → ../assets/css/style.css
+  Estilos desta página    → ../assets/css/pacientes.css
+
+  Como os painéis laterais funcionam (sem JavaScript):
+  ─────────────────────────────────────────────────────
+  Cada painel tem um <input type="checkbox"> oculto como irmão do body.
+  Um <label for="id-do-checkbox"> abre o painel ao clicar.
+  O CSS usa :checked ~ para detectar o estado e deslizar o painel.
+  Outro <label> fecha desmarcando o checkbox.
+
+  Ordem obrigatória dos irmãos do body:
+    1. checkboxes dos painéis  (position:fixed/ocultos)
+    2. .gatilho-sidebar
+    3. .sidebar
+    4. .overlay
+    5. .principal
+    6. .painel-fundo
+    7. .painel-lateral.painel-cadastro
+    8. .painel-lateral.painel-gerenciar
+-->
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MindTrack — Pacientes</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../../assets/css/style.css" />
+  <link rel="stylesheet" href="../../assets/css/pacientes.css" />
+</head>
+<body>
+
+  <!--
+    CHECKBOXES DOS PAINÉIS
+    Devem ser os primeiros filhos do body para que o seletor ~
+    alcance todos os irmãos que vêm depois (fundo e painéis).
+    Não usamos display:none — isso bloqueia o <label for> em alguns browsers.
+  -->
+  <input type="checkbox" id="painel-cadastro"  class="painel-gatilho" />
+  <input type="checkbox" id="painel-gerenciar" class="painel-gatilho" />
+
+  <!-- Barrinha de hover da sidebar -->
+  <div class="gatilho-sidebar"></div>
+
+  <!-- Sidebar — idêntica ao index -->
+  <aside class="sidebar">
+    <div class="logo">
+      <span class="logo-nome">MindTrack</span>
+      <span class="logo-sub">Gestão clínica</span>
+    </div>
+    <nav>
+      <p class="nav-rotulo">Geral</p>
+      <a class="nav-item" href="../../index.html">Painel</a>
+      <a class="nav-item ativo" href="pacientes.html">Pacientes</a>
+      <button class="nav-item" type="button">Agenda</button>
+      <button class="nav-item" type="button">Prontuários</button>
+      <hr class="separador" />
+      <p class="nav-rotulo">Análise</p>
+      <button class="nav-item" type="button">Relatórios</button>
+      <button class="nav-item" type="button">Configurações</button>
+    </nav>
+    <div class="perfil">
+      <div class="perfil-avatar">LB</div>
+      <div>
+        <p class="perfil-nome">Dra. Luiza Bueno</p>
+        <p class="perfil-crp">CRP 06/123456</p>
+      </div>
+    </div>
+  </aside>
+
+  <div class="overlay"></div>
+
+  <!-- Área principal -->
+  <div class="principal">
+
+    <header class="topbar">
+      <p class="topbar-titulo">MindTrack</p>
+      <p class="topbar-data">Domingo, 22 de março de 2026</p>
+    </header>
+
+    <main class="conteudo">
+
+      <!-- Cards de resumo -->
+      <section class="secao">
+        <h2 class="secao-titulo">
+          Pacientes
+          <span class="secao-sub">março 2026 · dados fictícios</span>
+        </h2>
+        <div class="grade-cards">
+          <article class="card card-azul">
+            <p class="card-rotulo">Pacientes ativos</p>
+            <p class="card-valor">34</p>
+            <p class="card-info">+3 em relação ao mês anterior</p>
+          </article>
+          <article class="card card-laranja">
+            <p class="card-rotulo">Pendências financeiras</p>
+            <p class="card-valor">4</p>
+            <p class="card-info">2 com mais de 30 dias</p>
+          </article>
+          <article class="card card-roxo">
+            <p class="card-rotulo">Pacientes inativos</p>
+            <p class="card-valor">8</p>
+            <p class="card-info">−1 vs. mês anterior</p>
+          </article>
+          <article class="card card-verde">
+            <p class="card-rotulo">Novos no mês</p>
+            <p class="card-valor">3</p>
+            <p class="card-info">encaminhamentos e indicações</p>
+          </article>
+        </div>
+      </section>
+
+      <!-- Barra de ações + tabela -->
+      <section class="secao">
+
+        <div class="barra-acoes">
+          <!-- Campo de busca — decorativo nesta versão -->
+          <input
+            class="campo-busca"
+            type="text"
+            placeholder="Buscar por nome, CID ou status..."
+            disabled
+            title="Busca disponível em versão futura"
+          />
+          <!--
+            Label que abre o painel de cadastro.
+            Marca o checkbox #painel-cadastro — o CSS cuida do resto.
+          -->
+          <label class="btn-acao btn-primario" for="painel-cadastro">
+            + Cadastrar paciente
+          </label>
+          <!--
+            Label que abre o painel de gerenciamento (registrar / excluir).
+            Só aparece este botão — cadastro e exclusão ficam dentro do painel.
+          -->
+          <label class="btn-acao btn-terciario" for="painel-gerenciar">
+            Gerenciar
+          </label>
+        </div>
+
+        <!-- Tabela de pacientes -->
+        <div class="card-secao">
+          <div class="card-secao-cabecalho">
+            <h2 class="card-secao-titulo">Lista de pacientes</h2>
+            <span class="secao-sub">7 pacientes exibidos</span>
+          </div>
+          <table class="tabela">
+            <thead>
+              <tr>
+                <th>Nome</th>
+                <th>Status</th>
+                <th>CID / Diagnóstico</th>
+                <th>Início</th>
+                <th>Sessões</th>
+                <th>Notas</th>
+                <th>Financeiro</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Ana Silva</td>
+                <td><span class="badge badge-ativo">Ativo</span></td>
+                <td>F41.1 — Ansiedade generalizada</td>
+                <td>jan/2025</td><td>18</td>
+                <td class="col-notas" title="Avaliação de risco concluída em fev/25">Avaliação de risco concluída em fev/25</td>
+                <td><span class="badge badge-em-dia">Em dia</span></td>
+              </tr>
+              <tr>
+                <td>Carlos Matos</td>
+                <td><span class="badge badge-ativo">Ativo</span></td>
+                <td>F32.1 — Episódio depressivo moderado</td>
+                <td>mar/2025</td><td>12</td>
+                <td class="col-notas" title="Encaminhado para psiquiatria em abr/25">Encaminhado para psiquiatria em abr/25</td>
+                <td><span class="badge badge-pendente">Pendente</span></td>
+              </tr>
+              <tr>
+                <td>Luiza Ramos</td>
+                <td><span class="badge badge-ativo">Ativo</span></td>
+                <td>F43.1 — TEPT</td>
+                <td>jun/2024</td><td>31</td>
+                <td class="col-notas" title="Protocolo EMDR iniciado em ago/24">Protocolo EMDR iniciado em ago/24</td>
+                <td><span class="badge badge-em-dia">Em dia</span></td>
+              </tr>
+              <tr>
+                <td>Pedro Oliveira</td>
+                <td><span class="badge badge-ativo">Ativo</span></td>
+                <td>F60.3 — Transtorno borderline</td>
+                <td>set/2024</td><td>24</td>
+                <td class="col-notas" title="DBT — em fase de regulação emocional">DBT — em fase de regulação emocional</td>
+                <td><span class="badge badge-pendente">Pendente</span></td>
+              </tr>
+              <tr>
+                <td>Beatriz Ferreira</td>
+                <td><span class="badge badge-ativo">Ativo</span></td>
+                <td>F40.1 — Fobia social</td>
+                <td>fev/2026</td><td>4</td>
+                <td class="col-notas" title="Início recente — em fase de vínculo terapêutico">Início recente — em fase de vínculo</td>
+                <td><span class="badge badge-em-dia">Em dia</span></td>
+              </tr>
+              <tr>
+                <td>Rafael Costa</td>
+                <td><span class="badge badge-ativo">Ativo</span></td>
+                <td>F90.0 — TDAH</td>
+                <td>out/2024</td><td>20</td>
+                <td class="col-notas" title="Relatório escolar solicitado em jan/25">Relatório escolar solicitado em jan/25</td>
+                <td><span class="badge badge-em-dia">Em dia</span></td>
+              </tr>
+              <tr>
+                <td>Família Mendes</td>
+                <td><span class="badge badge-inativo">Inativo</span></td>
+                <td>Z63.0 — Terapia familiar</td>
+                <td>abr/2024</td><td>14</td>
+                <td class="col-notas" title="Encerramento combinado em dez/24">Encerramento combinado em dez/24</td>
+                <td><span class="badge badge-pendente">Pendente</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+    </main>
+
+    <footer class="rodape">
+      <span>MindTrack — protótipo de dashboard clínico · dados fictícios</span>
+      <span>v0.1.0</span>
+    </footer>
+
+  </div><!-- fim principal -->
+
+  <!-- Fundo semitransparente — aparece quando qualquer painel está aberto -->
+  <div class="painel-fundo">
+    <label class="painel-fundo-fechar" for="painel-cadastro"></label>
+    <label class="painel-fundo-fechar" for="painel-gerenciar"></label>
+  </div>
+
+  <!-- PAINEL DE CADASTRO -->
+  <div class="painel-lateral painel-cadastro">
+  <div class="painel-cabecalho">
+    <h2 class="painel-titulo">Cadastrar novo paciente</h2>
+    <!-- Label × fecha o painel desmarcando o checkbox #painel-cadastro -->
+    <label class="painel-fechar" for="painel-cadastro">&times;</label>
+  </div>
+
+  <div class="painel-corpo">
+
+    <!-- Nome completo -->
+    <div class="campo-grupo">
+      <label class="campo-label" for="nome-paciente">Nome completo</label>
+      <input class="campo-input" type="text" id="nome-paciente" placeholder="Ex: Ana Silva" />
+    </div>
+
+    <!-- CID e status lado a lado -->
+    <div class="campo-linha">
+      <div class="campo-grupo">
+        <label class="campo-label" for="cid-paciente">CID / Diagnóstico</label>
+        <input class="campo-input" type="text" id="cid-paciente" placeholder="Ex: F41.1" />
+      </div>
+      <div class="campo-grupo">
+        <label class="campo-label" for="status-paciente">Status</label>
+        <select class="campo-select" id="status-paciente">
+          <option value="ativo">Ativo</option>
+          <option value="inativo">Inativo</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Data de início e situação financeira lado a lado -->
+    <div class="campo-linha">
+      <div class="campo-grupo">
+        <label class="campo-label" for="inicio-paciente">Data de início</label>
+        <input class="campo-input" type="month" id="inicio-paciente" />
+      </div>
+      <div class="campo-grupo">
+        <label class="campo-label" for="financeiro-paciente">Situação financeira</label>
+        <select class="campo-select" id="financeiro-paciente">
+          <option value="em-dia">Em dia</option>
+          <option value="pendente">Pendente</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Notas importantes -->
+    <div class="campo-grupo">
+      <label class="campo-label" for="notas-paciente">Notas importantes</label>
+      <input class="campo-input" type="text" id="notas-paciente" placeholder="Observações relevantes" />
+    </div>
+
+  </div><!-- fim painel-corpo -->
+
+  <div class="painel-rodape">
+    <label class="btn-cancelar" for="painel-cadastro">Cancelar</label>
+    <button class="btn-acao btn-primario" type="button">Salvar paciente</button>
+  </div>
+</div>
+
+  <!-- PAINEL DE GERENCIAMENTO -->
+  <div class="painel-lateral painel-gerenciar">
+  <div class="painel-cabecalho">
+    <h2 class="painel-titulo">Gerenciar paciente</h2>
+    <!-- Label × fecha o painel desmarcando o checkbox #painel-gerenciar -->
+    <label class="painel-fechar" for="painel-gerenciar">&times;</label>
+  </div>
+
+  <div class="painel-corpo">
+
+    <!-- ── 1. Ações rápidas ─────────────────────────────────── -->
+    <div class="gerenciar-opcoes">
+
+      <div class="gerenciar-item">
+        <div class="gerenciar-item-info">
+          <p>Registrar atendimento</p>
+          <p>Adicionar uma sessão ao histórico do paciente</p>
+        </div>
+        <button class="btn-acao btn-secundario" type="button">Registrar</button>
+      </div>
+
+      <div class="gerenciar-item">
+        <div class="gerenciar-item-info">
+          <p>Excluir paciente</p>
+          <p>Remove permanentemente o cadastro e histórico</p>
+        </div>
+        <button class="btn-excluir" type="button">Excluir</button>
+      </div>
+
+    </div>
+
+    <!-- ── 2. Aviso de exclusão ─────────────────────────────── -->
+    <div class="aviso-exclusao">
+      <p>
+        A exclusão é <strong>permanente e irreversível.</strong>
+        Todos os registros de atendimento vinculados também serão removidos.
+      </p>
+    </div>
+
+    <!-- ── 3. Formulário de edição ──────────────────────────── -->
+    <div class="gerenciar-divisor">
+      <span>Editar dados do paciente</span>
+    </div>
+
+    <!-- Nome -->
+    <div class="campo-grupo">
+      <label class="campo-label" for="editar-nome">Nome completo</label>
+      <input class="campo-input" type="text" id="editar-nome" value="Ana Silva" />
+    </div>
+
+    <!-- CID e status lado a lado -->
+    <div class="campo-linha">
+      <div class="campo-grupo">
+        <label class="campo-label" for="editar-cid">CID / Diagnóstico</label>
+        <input class="campo-input" type="text" id="editar-cid" value="F41.1" />
+      </div>
+      <div class="campo-grupo">
+        <label class="campo-label" for="editar-status">Status</label>
+        <select class="campo-select" id="editar-status">
+          <option value="ativo" selected>Ativo</option>
+          <option value="inativo">Inativo</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Sessões e financeiro lado a lado -->
+    <div class="campo-linha">
+      <div class="campo-grupo">
+        <label class="campo-label" for="editar-sessoes">Sessões realizadas</label>
+        <input class="campo-input" type="number" id="editar-sessoes" value="18" min="0" />
+      </div>
+      <div class="campo-grupo">
+        <label class="campo-label" for="editar-financeiro">Situação financeira</label>
+        <select class="campo-select" id="editar-financeiro">
+          <option value="em-dia" selected>Em dia</option>
+          <option value="pendente">Pendente</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Notas -->
+    <div class="campo-grupo">
+      <label class="campo-label" for="editar-notas">Notas importantes</label>
+      <input class="campo-input" type="text" id="editar-notas" value="Avaliação de risco concluída em fev/25" />
+    </div>
+
+  </div><!-- fim painel-corpo -->
+
+  <div class="painel-rodape">
+    <label class="btn-cancelar" for="painel-gerenciar">Fechar</label>
+    <button class="btn-acao btn-primario" type="button">Salvar alterações</button>
+  </div>
+</div>
+
+
+</body>
+</html>
