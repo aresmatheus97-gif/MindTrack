@@ -1,107 +1,41 @@
 <!DOCTYPE html>
 <!--
-  MindTrack — Dashboard para psicólogos
-  ═══════════════════════════════════════════════════════════════
-  Como a sidebar funciona sem JavaScript no momento:
-  ─────────────────────────────────────────
-  O truque é colocar o gatilho (.gatilho-sidebar) e a sidebar
-  (.sidebar) como irmãos no HTML. O CSS consegue selecionar
-  um irmão quando o cursor está sobre o anterior usando o
-  combinador "~" (til). Exemplo:
-    .gatilho-sidebar:hover ~ .sidebar { transform: translateX(0) }
-  Isso faz a sidebar deslizar quando o mouse toca a barrinha,
-  sem precisar de nenhuma linha de JavaScript.
-
-  Estrutura do body:
-  ┌────────────────────────────────────────────────────┐
-  │  .gatilho-sidebar  ← barrinha fina na borda        │
-  │  .sidebar          ← menu lateral (irmã do gatilho)│
-  │  .principal        ← todo o conteúdo da página     │
-  │    .topbar         ← barra fixa no topo            │
-  │    main.conteudo   ← seções do painel              │
-  │    footer.rodape   ← rodapé                        │
-  └────────────────────────────────────────────────────┘
+  MindTrack — Painel principal
+  Aparência → assets/css/style.css
+  Sidebar   → hover puro via CSS, sem JavaScript
 -->
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>MindTrack — Painel</title>
-
-  <!--
-    Fontes externas do Google Fonts.
-    Lora  → fonte serifada usada em títulos (transmite autoridade e calor)
-    Inter → fonte sem serifa usada em textos corridos (legível em telas)
-    O "preconnect" abre a conexão com o servidor de fontes com antecedência,
-    acelerando o carregamento.
-  -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
-
-  <!-- Estilos do projeto — toda a aparência está neste arquivo -->
   <link rel="stylesheet" href="assets/css/style.css" />
 </head>
-
 <body>
 
-  <!--
-    GATILHO DA SIDEBAR
-    ══════════════════
-    Barrinha fina colada na borda esquerda da tela.
-    Quando o cursor passa sobre ela, o CSS ativa a sidebar
-    usando o seletor: .gatilho-sidebar:hover ~ .sidebar
-    Ela some automaticamente quando a sidebar está aberta,
-    para não atrapalhar o conteúdo do menu.
-  -->
+  <!-- Barrinha que dispara o hover da sidebar -->
   <div class="gatilho-sidebar"></div>
 
-  <!--
-    SIDEBAR — Menu de navegação lateral
-    ═════════════════════════════════════
-    Fica fixada à esquerda, fora da tela por padrão
-    (transform: translateX(-180px) no CSS).
-    Desliza para dentro quando:
-      • o cursor passa pelo gatilho (.gatilho-sidebar:hover ~ &)
-      • o cursor está sobre a própria sidebar (&:hover)
-    Usa apenas transform para o movimento — animar "width"
-    é proibido pois causa recalcule de layout na página inteira.
-  -->
+  <!-- Sidebar de navegação -->
   <aside class="sidebar">
-
-    <!-- Identidade do sistema -->
     <div class="logo">
       <span class="logo-nome">MindTrack</span>
       <span class="logo-sub">Gestão clínica</span>
     </div>
-
-    <!--
-      Navegação principal.
-      Os botões não redirecionam ainda — navegação entre páginas
-      será implementada futuramente.
-      A classe "ativo" no primeiro botão indica a página atual.
-    -->
     <nav>
       <p class="nav-rotulo">Geral</p>
-      <button class="nav-item ativo" type="button">Painel</button>
-      <button class="nav-item" type="button">Pacientes</button>
+      <a class="nav-item ativo" href="index.html">Painel</a>
+      <a class="nav-item" href="pages/pacientes/pacientes.html">Pacientes</a>
       <button class="nav-item" type="button">Agenda</button>
       <button class="nav-item" type="button">Prontuários</button>
-
-      <!-- Linha divisória visual entre grupos do menu -->
       <hr class="separador" />
-
       <p class="nav-rotulo">Análise</p>
       <button class="nav-item" type="button">Relatórios</button>
       <button class="nav-item" type="button">Configurações</button>
     </nav>
-
-    <!--
-      Perfil do psicólogo — empurrado para a base da sidebar
-      via "margin-top: auto" no CSS.
-      O avatar (.perfil-avatar) exibe as iniciais do nome.
-      Dados fictícios para fins de portfólio.
-    -->
     <div class="perfil">
       <div class="perfil-avatar">LB</div>
       <div>
@@ -109,133 +43,72 @@
         <p class="perfil-crp">CRP 06/123456</p>
       </div>
     </div>
-    
-
   </aside>
+
+  <!-- Fundo desfocado da sidebar -->
   <div class="overlay"></div>
-  <!--
-    ÁREA PRINCIPAL — Todo o conteúdo do painel
-    ════════════════════════════════════════════
-    Ocupa 100% da largura da tela (a sidebar flutua sobre ela,
-    pois usa position: fixed). Organiza topbar, conteúdo e rodapé
-    em coluna usando flexbox.
-  -->
+
+  <!-- Área principal -->
   <div class="principal">
 
-    <!--
-      TOPBAR — Barra de topo fixa durante o scroll
-      Exibe a saudação personalizada e a data do dia.
-      "position: sticky" faz ela ficar presa ao topo enquanto
-      o usuário rola a página para baixo.
-    -->
     <header class="topbar">
-      <div>
-        <p class="topbar-titulo">MindTrack</p>
-        <p class="topbar-data">Domingo, 22 de março de 2026</p>
-      </div>
+      <p class="topbar-titulo">MindTrack</p>
+      <p class="topbar-data">Domingo, 22 de março de 2026</p>
     </header>
 
-    <!--
-      CONTEÚDO PRINCIPAL
-      Contém as três seções do dashboard:
-        1. Ações rápidas
-        2. Cards de estatísticas
-        3. Grade inferior (tabela de atendimentos + calendário)
-    -->
     <main class="conteudo">
 
-      <!--
-        SEÇÃO 1 — Ações rápidas
-        ════════════════════════
-        Botões de acesso direto às funções mais usadas.
-        Cada botão terá sua ação implementada em sessão futura.
-        As variações de cor (.btn-primario, .btn-secundario, etc.)
-        indicam hierarquia visual das ações.
-      -->
+      <!-- Ações rápidas -->
       <section class="secao">
         <h2 class="secao-titulo">Ações rápidas</h2>
         <div class="acoes-rapidas">
-          <!-- Ação principal: cadastrar novo paciente -->
           <button class="btn-acao btn-primario" type="button">+ Novo paciente</button>
-          <!-- Ação secundária: abrir agenda -->
           <button class="btn-acao btn-secundario" type="button">+ Agendar consulta</button>
-          <!-- Ações terciárias: menos urgentes, visual mais discreto -->
           <button class="btn-acao btn-terciario" type="button">Registrar atendimento</button>
           <button class="btn-acao btn-terciario" type="button">Ver relatórios</button>
         </div>
       </section>
 
-      <!--
-        SEÇÃO 2 — Cards de estatísticas
-        ════════════════════════════════
-        Quatro cartões com os indicadores principais do mês.
-        Cada card tem uma cor de destaque no topo (border-top)
-        para diferenciação visual rápida.
-        Todos os dados são fictícios — usados apenas para
-        demonstrar o layout do dashboar.
-      -->
+      <!-- Cards de estatísticas -->
       <section class="secao">
         <h2 class="secao-titulo">
           Visão geral
           <span class="secao-sub">março 2026 · dados fictícios</span>
         </h2>
         <div class="grade-cards">
-
-          <!-- Card 1: total de pacientes ativos -->
           <article class="card card-azul">
             <p class="card-rotulo">Total de pacientes</p>
             <p class="card-valor">34</p>
             <p class="card-info">+3 em relação ao mês anterior</p>
           </article>
-
-          <!-- Card 2: sessões realizadas no mês -->
           <article class="card card-verde">
             <p class="card-rotulo">Sessões no mês</p>
             <p class="card-valor">61</p>
             <p class="card-info">+8 vs. fevereiro</p>
           </article>
-
-          <!-- Card 3: faltas registradas -->
           <article class="card card-laranja">
             <p class="card-rotulo">Faltas registradas</p>
             <p class="card-valor">5</p>
             <p class="card-info">−2 vs. mês anterior</p>
           </article>
-
-          <!-- Card 4: percentual de comparecimento -->
           <article class="card card-roxo">
             <p class="card-rotulo">Taxa de presença</p>
             <p class="card-valor">92%</p>
             <p class="card-info">+4% vs. fevereiro</p>
           </article>
-
         </div>
       </section>
 
-      <!--
-        SEÇÃO 3 — Grade inferior
-        ════════════════════════
-        Divide o espaço em duas colunas lado a lado:
-          • Esquerda: tabela com os últimos atendimentos
-          • Direita:  calendário do mês com sessões do dia
-        O CSS usa "display: grid" para fazer essa divisão.
-      -->
+      <!-- Grade inferior: tabela + calendário -->
       <div class="grade-inferior">
 
-        <!--
-          COLUNA ESQUERDA — Tabela de atendimentos recentes
-          Lista os últimos atendimentos com nome do paciente,
-          data, horário e status (realizado, falta ou agendado).
-          O status é representado por um badge colorido.
-        -->
+        <!-- Tabela de atendimentos recentes -->
         <section class="secao">
           <div class="card-secao">
             <div class="card-secao-cabecalho">
               <h2 class="card-secao-titulo">Atendimentos recentes</h2>
-              <!-- "Ver todos" levará à página de atendimentos no futuro -->
-              <a class="link-ver-todos" tabindex="0">Ver todos</a>
+              <a class="link-ver-todos" href="pages/pacientes/pacientes.html">Ver todos</a>
             </div>
-
             <table class="tabela">
               <thead>
                 <tr>
@@ -246,37 +119,24 @@
                 </tr>
               </thead>
               <tbody>
-                <!-- Cada linha representa um atendimento registrado -->
                 <tr>
-                  <td>Ana Silva</td>
-                  <td>22/03/2026</td>
-                  <td>09:00</td>
+                  <td>Ana Silva</td><td>22/03/2026</td><td>09:00</td>
                   <td><span class="badge badge-realizado">Realizado</span></td>
                 </tr>
                 <tr>
-                  <td>Carlos Matos</td>
-                  <td>21/03/2026</td>
-                  <td>10:30</td>
+                  <td>Carlos Matos</td><td>21/03/2026</td><td>10:30</td>
                   <td><span class="badge badge-realizado">Realizado</span></td>
                 </tr>
                 <tr>
-                  <td>Luiza Ramos</td>
-                  <td>21/03/2026</td>
-                  <td>14:00</td>
-                  <!-- Badge vermelho para indicar ausência -->
+                  <td>Luiza Ramos</td><td>21/03/2026</td><td>14:00</td>
                   <td><span class="badge badge-falta">Falta</span></td>
                 </tr>
                 <tr>
-                  <td>Pedro Oliveira</td>
-                  <td>20/03/2026</td>
-                  <td>08:00</td>
+                  <td>Pedro Oliveira</td><td>20/03/2026</td><td>08:00</td>
                   <td><span class="badge badge-realizado">Realizado</span></td>
                 </tr>
                 <tr>
-                  <td>Beatriz Ferreira</td>
-                  <td>19/03/2026</td>
-                  <td>16:00</td>
-                  <!-- Badge azul para sessão ainda por acontecer -->
+                  <td>Beatriz Ferreira</td><td>19/03/2026</td><td>16:00</td>
                   <td><span class="badge badge-agendado">Agendado</span></td>
                 </tr>
               </tbody>
@@ -284,44 +144,21 @@
           </div>
         </section>
 
-        <!--
-          COLUNA DIREITA — Calendário do mês
-          ════════════════════════════════════
-          Exibe os dias de março de 2026 em grade 7×5.
-          Classes especiais nos dias:
-            .hoje      → dia atual (fundo azul)
-            .com-sessao → dia com sessão agendada (texto verde)
-            .outro-mes  → dias do mês anterior/seguinte (cinza)
-
-          Abaixo do calendário ficam listadas as sessões
-          do dia selecionado (dados fictícios).
-        -->
+        <!-- Calendário -->
         <section class="secao">
           <div class="card-secao">
-
-            <!-- Cabeçalho com nome do mês e botões de navegação -->
             <div class="card-secao-cabecalho">
               <h2 class="card-secao-titulo">Março 2026</h2>
               <div>
-                <!-- Navegação de mês — funcional em sessão futura -->
                 <button class="btn-mes" type="button">&lsaquo;</button>
                 <button class="btn-mes" type="button">&rsaquo;</button>
               </div>
             </div>
-
             <div class="calendario">
-              <!-- Cabeçalho dos dias da semana -->
               <div class="cal-semana">
                 <span>D</span><span>S</span><span>T</span>
                 <span>Q</span><span>Q</span><span>S</span><span>S</span>
               </div>
-
-              <!--
-                Grade de dias do mês.
-                Março de 2026 começa na domingo (coluna 1).
-                Dias com ".com-sessao" têm sessão marcada.
-                Dias com ".outro-mes" pertencem a abril.
-              -->
               <div class="cal-dias">
                 <span class="dia">1</span>
                 <span class="dia com-sessao">2</span>
@@ -344,7 +181,6 @@
                 <span class="dia com-sessao">19</span>
                 <span class="dia">20</span>
                 <span class="dia">21</span>
-                <!-- Dia atual marcado com a classe "hoje" -->
                 <span class="dia hoje">22</span>
                 <span class="dia com-sessao">23</span>
                 <span class="dia com-sessao">24</span>
@@ -355,22 +191,14 @@
                 <span class="dia">29</span>
                 <span class="dia com-sessao">30</span>
                 <span class="dia com-sessao">31</span>
-                <!-- Dias de abril preenchendo a última semana -->
                 <span class="dia outro-mes">1</span>
                 <span class="dia outro-mes">2</span>
                 <span class="dia outro-mes">3</span>
                 <span class="dia outro-mes">4</span>
               </div>
             </div>
-
-            <!--
-              Lista de sessões do dia selecionado.
-              Por enquanto exibe as sessões fixas do dia 22.
-              Cada item mostra: horário + nome do paciente + tipo.
-            -->
             <div class="sessoes-hoje">
               <p class="sessoes-titulo">Hoje — 22 mar</p>
-
               <div class="sessao-item">
                 <span class="sessao-hora">09:00</span>
                 <div>
@@ -378,7 +206,6 @@
                   <p class="sessao-tipo">Sessão individual</p>
                 </div>
               </div>
-
               <div class="sessao-item">
                 <span class="sessao-hora">11:00</span>
                 <div>
@@ -386,7 +213,6 @@
                   <p class="sessao-tipo">Sessão individual</p>
                 </div>
               </div>
-
               <div class="sessao-item">
                 <span class="sessao-hora">14:30</span>
                 <div>
@@ -395,21 +221,19 @@
                 </div>
               </div>
             </div>
-
           </div>
         </section>
 
-      </div><!-- fim da grade-inferior -->
+      </div><!-- fim grade-inferior -->
 
     </main>
 
-    <!-- Rodapé discreto com identificação do protótipo -->
     <footer class="rodape">
-      <span>MindTrack — protótipo de dashboard clinico · dados fictícios</span>
+      <span>MindTrack — protótipo de dashboard clínico · dados fictícios</span>
       <span>v0.1.0</span>
     </footer>
 
-  </div><!-- fim da área principal -->
+  </div><!-- fim principal -->
 
 </body>
 </html>
